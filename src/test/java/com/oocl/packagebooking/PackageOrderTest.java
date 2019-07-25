@@ -17,8 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @RunWith(SpringRunner.class)
@@ -76,6 +75,36 @@ public class PackageOrderTest {
                 .willReturn(expectResult);
 
         mvc.perform(get("/packageOrders","已预约"))
+                .andExpect(content().string(objectMapper.writeValueAsString(expectResult)));
+    }
+
+    @Test
+    public void should_return_packageOrder_when_update_status() throws Exception {
+
+        PackageOrder packageOrder = new PackageOrder("201907240001","Demi","18075525725","已预约",new Date(),3.0);
+        PackageOrder packageOrder1 = new PackageOrder("201907240001","Demi","18075525725","已取件",new Date(),3.0);
+        packageOrder1.setId((long) 1);
+
+        given(packageOrderService.updatePackageOrderStatus((long) 1,packageOrder))
+                .willReturn(packageOrder1);
+
+        mvc.perform(put("/packageOrders/",1,packageOrder))
+                .andExpect(content().string(objectMapper.writeValueAsString(packageOrder1)));
+    }
+
+    @Test
+    public void should_return_packageOrders_when_query_by_orderTime() throws Exception {
+
+        PackageOrder packageOrder = new PackageOrder("201907240001","Demi","18075525725","已预约",new Date(),3.0);
+//        PackageOrder packageOrder2 = new PackageOrder("201907240002","Demi2","18075525725","已取件",new Date(),3.0);
+
+        List<PackageOrder> expectResult = new ArrayList<PackageOrder>();
+        expectResult.add(packageOrder);
+
+        given(packageOrderService.getPackageOrdersByOrderTime(new Date()))
+                .willReturn(expectResult);
+
+        mvc.perform(get("/packageOrders",new Date()))
                 .andExpect(content().string(objectMapper.writeValueAsString(expectResult)));
     }
 
