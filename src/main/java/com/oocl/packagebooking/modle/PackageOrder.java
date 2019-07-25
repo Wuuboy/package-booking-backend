@@ -18,6 +18,14 @@ public class PackageOrder {
     private Date orderTime;
     private Double weight;
 
+    public PackageOrder(String orderNumber, String userName, String phoneNumber, String status, Double weight) {
+        this.orderNumber = orderNumber;
+        this.userName = userName;
+        this.phoneNumber = phoneNumber;
+        this.status = status;
+        this.weight = weight;
+    }
+
     public void setWeight(Double weight) {
         this.weight = weight;
     }

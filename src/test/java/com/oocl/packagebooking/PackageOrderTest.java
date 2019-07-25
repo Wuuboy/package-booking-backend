@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(PackageOrderController.class)
 public class PackageOrderTest {
 
-
     @Autowired
     private MockMvc mvc;
 
@@ -68,8 +67,8 @@ public class PackageOrderTest {
         mvc.perform(post("/packageOrders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(packageOrder)))
-                .andDo(print());
-//                .andExpect(content().string(objectMapper.writeValueAsString(packageOrder)));
+//                .andDo(print());
+                .andExpect(content().string(objectMapper.writeValueAsString(packageOrder)));
     }
 
     @Test
@@ -105,20 +104,16 @@ public class PackageOrderTest {
     }
 
     @Test
-    public void should_return_packageOrders_when_query_by_orderTime() throws Exception {
+    public void should_return_packageOrder_when_update_by_orderNumber() throws Exception {
 
-        PackageOrder packageOrder = new PackageOrder("201907240001","Demi","18075525725","已预约",new Date(),3.0);
-//        PackageOrder packageOrder2 = new PackageOrder("201907240002","Demi2","18075525725","已取件",new Date(),3.0);
+        PackageOrder packageOrder = new PackageOrder("201907240001","Demi","18075525725","已预约",3.0);
+        PackageOrder packageOrderExpected = new PackageOrder("201907240001","Demi","18075525725","已取件",new Date(),3.0);
 
-        List<PackageOrder> expectResult = new ArrayList<PackageOrder>();
-        expectResult.add(packageOrder);
+        given(packageOrderService.setOrderTimeByOrderNumber("201907240001",new Date()))
+                .willReturn(packageOrderExpected);
 
-        given(packageOrderService.getPackageOrdersByOrderTime(new Date()))
-                .willReturn(expectResult);
-
-        mvc.perform(get("/packageOrders?orderTime=2019-07-25T03:07:16.740+0000",new Date()))
-                .andExpect(content().string(objectMapper.writeValueAsString(expectResult)));
+        mvc.perform(get("/packageOrders/201907240001",new Date()))
+                .andExpect(content().string(objectMapper.writeValueAsString(packageOrderExpected)));
     }
-
 
 }

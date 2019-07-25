@@ -35,8 +35,8 @@ public class PackageOrderController {
         return  packageOrderService.setOrderTimeByOrderNumber(orderNumber,packageOrder);
     }
 
-//    @PutMapping("/packageOrders/{id}")
-//    public PackageOrder updatePackageOrderStatus(@PathVariable Long id) {
-//        return  packageOrderService.updatePackageOrderStatus(id);
-//    }
+    @PutMapping("/packageOrders/{id}")
+    public PackageOrder updatePackageOrderStatus(@PathVariable Long id) {
+        return  packageOrderService.updatePackageOrderStatus(id);
+    }
 }
