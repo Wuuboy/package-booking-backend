@@ -5,6 +5,8 @@ import com.oocl.packagebooking.repository.PackageOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -26,20 +28,27 @@ public class PackageOrderService {
         return packageOrderRepository.findAllByStatus(status);
     }
 
-    public PackageOrder updatePackageOrderStatus(Long id, PackageOrder packageOrder) {
+    public PackageOrder updatePackageOrderStatus(Long id) {
         PackageOrder packageOrderFinded = packageOrderRepository.findById(id).orElse(null);
         if (packageOrderFinded != null){
-            packageOrderFinded.setStatus(packageOrder.getStatus());
-            packageOrderFinded.setOrderNumber(packageOrder.getOrderNumber());
-            packageOrderFinded.setOrderTime(packageOrder.getOrderTime());
-            packageOrderFinded.setPhoneNumber(packageOrder.getPhoneNumber());
-            packageOrderFinded.setUserName(packageOrder.getUserName());
-            packageOrderFinded.setWeight(packageOrder.getWeight());
+            packageOrderFinded.setStatus("已取件");
         }
        return  packageOrderRepository.saveAndFlush(packageOrderFinded);
     }
 
-    public List<PackageOrder> getPackageOrdersByOrderTime(Date orderTime) {
-        return packageOrderRepository.findAllByOrderTime(orderTime);
+
+    public PackageOrder setOrderTimeByOrderNumber(String orderNumber, Object packageOrder) throws ParseException {
+
+        String  orderTime = String.valueOf(packageOrder).split("=")[2].split("}")[0];
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date orderTimeFormated = sdf.parse(orderTime);
+        System.out.println(sdf.format(orderTimeFormated));
+
+        PackageOrder packageOrderFinded = packageOrderRepository.findAllByOrderNumber(orderNumber).get(0);
+        if (packageOrderFinded!=null){
+            packageOrderFinded.setOrderTime(orderTimeFormated);
+        }
+        return packageOrderRepository.saveAndFlush(packageOrderFinded);
     }
 }

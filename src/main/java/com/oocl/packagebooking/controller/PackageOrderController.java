@@ -5,6 +5,7 @@ import com.oocl.packagebooking.service.PackageOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -29,13 +30,13 @@ public class PackageOrderController {
         return  packageOrderService.getPackageOrdersByStatus(status);
     }
 
-    @GetMapping(value = "/packageOrders",params = {"orderTime"})
-    public List<PackageOrder> getPackageOrdersByOrderTime(@RequestParam Date orderTime){
-        return  packageOrderService.getPackageOrdersByOrderTime(orderTime);
+    @PutMapping(value = "/packageOrders/{orderNumber}")
+    public PackageOrder getPackageOrdersByOrderTime(@PathVariable String orderNumber,@RequestBody Object packageOrder) throws ParseException {
+        return  packageOrderService.setOrderTimeByOrderNumber(orderNumber,packageOrder);
     }
 
-    @PutMapping("/packageOrders/{id}")
-    public PackageOrder updatePackageOrderStatus(@PathVariable Long id, @RequestBody PackageOrder packageOrder) {
-        return  packageOrderService.updatePackageOrderStatus(id,packageOrder);
-    }
+//    @PutMapping("/packageOrders/{id}")
+//    public PackageOrder updatePackageOrderStatus(@PathVariable Long id) {
+//        return  packageOrderService.updatePackageOrderStatus(id);
+//    }
 }

@@ -10,4 +10,6 @@ public interface PackageOrderRepository extends JpaRepository<PackageOrder,Long>
     List<PackageOrder> findAllByStatus(String status);
 
     List<PackageOrder> findAllByOrderTime(Date orderTime);
+
+    List<PackageOrder> findAllByOrderNumber(String orderNumber);
 }
