@@ -14,6 +14,7 @@ public class PackageOrder {
     private String orderNumber;
     private String userName;
     private String phoneNumber;
+    private String status;
     private Date orderTime;
     private Double weight;
 
@@ -68,10 +69,19 @@ public class PackageOrder {
         return orderTime;
     }
 
-    public PackageOrder(String orderNumber, String userName, String phoneNumber, Date orderTime, Double weight) {
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public PackageOrder(String orderNumber, String userName, String phoneNumber, String status, Date orderTime, Double weight) {
         this.orderNumber = orderNumber;
         this.userName = userName;
         this.phoneNumber = phoneNumber;
+        this.status = status;
         this.orderTime = orderTime;
         this.weight = weight;
     }

@@ -13,10 +13,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @RunWith(SpringRunner.class)
@@ -48,5 +50,17 @@ public class PackageOrderTest {
 
         mvc.perform(get("/packageOrders"))
                 .andExpect(content().string(objectMapper.writeValueAsString(expectResult)));
+    }
+
+    @Test
+    public void should_return_packageOrders_when_post_packageOrder() throws Exception {
+
+        PackageOrder packageOrder = new PackageOrder("201907240001","Demi","18075525725","已预约",new Date(),3.0);
+
+        given(packageOrderService.addPackageOrder(packageOrder))
+                .willReturn(packageOrder);
+
+        mvc.perform(post("/packageOrders",packageOrder))
+                .andExpect(content().string(objectMapper.writeValueAsString(packageOrder)));
     }
 }
