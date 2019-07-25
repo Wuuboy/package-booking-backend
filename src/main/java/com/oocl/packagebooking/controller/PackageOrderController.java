@@ -25,7 +25,7 @@ public class PackageOrderController {
         return packageOrderService.addPackageOrder(packageOrder);
     }
     @GetMapping(value = "/packageOrders",params = {"status"})
-    public List<PackageOrder> getPackageOrdersByStatus(@PathVariable String status){
+    public List<PackageOrder> getPackageOrdersByStatus(@RequestParam String status){
         return  packageOrderService.getPackageOrdersByStatus(status);
     }
 
