@@ -53,7 +53,7 @@ public class PackageOrderTest {
     }
 
     @Test
-    public void should_return_packageOrders_when_post_packageOrder() throws Exception {
+    public void should_return_packageOrder_when_post_packageOrder() throws Exception {
 
         PackageOrder packageOrder = new PackageOrder("201907240001","Demi","18075525725","已预约",new Date(),3.0);
 
@@ -63,4 +63,21 @@ public class PackageOrderTest {
         mvc.perform(post("/packageOrders",packageOrder))
                 .andExpect(content().string(objectMapper.writeValueAsString(packageOrder)));
     }
+
+    @Test
+    public void should_return_packageOrders_when_query_by_status() throws Exception {
+
+        PackageOrder packageOrder = new PackageOrder("201907240001","Demi","18075525725","已预约",new Date(),3.0);
+//        PackageOrder packageOrder2 = new PackageOrder("201907240002","Demi2","18075525725","已取件",new Date(),3.0);
+        List<PackageOrder> expectResult = new ArrayList<PackageOrder>();
+        expectResult.add(packageOrder);
+
+        given(packageOrderService.getPackageOrdersByStatus("已预约"))
+                .willReturn(expectResult);
+
+        mvc.perform(get("/packageOrders","已预约"))
+                .andExpect(content().string(objectMapper.writeValueAsString(expectResult)));
+    }
+
+
 }

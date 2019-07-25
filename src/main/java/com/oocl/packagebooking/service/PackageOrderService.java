@@ -19,4 +19,8 @@ public class PackageOrderService {
     public PackageOrder addPackageOrder(PackageOrder packageOrder) {
         return packageOrderRepository.saveAndFlush(packageOrder);
     }
+
+    public List<PackageOrder> getPackageOrdersByStatus(String status) {
+        return packageOrderRepository.findAllByStatus(status);
+    }
 }
