@@ -1,14 +1,19 @@
 package com.oocl.packagebooking;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oocl.packagebooking.controller.PackageOrderController;
 import com.oocl.packagebooking.modle.PackageOrder;
 import com.oocl.packagebooking.service.PackageOrderService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -18,11 +23,12 @@ import java.util.List;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(PackageOrderController.class)
 public class PackageOrderTest {
 
 
@@ -59,8 +65,11 @@ public class PackageOrderTest {
         given(packageOrderService.addPackageOrder(packageOrder))
                 .willReturn(packageOrder);
 
-        mvc.perform(post("/packageOrders",packageOrder))
-                .andExpect(content().string(objectMapper.writeValueAsString(packageOrder)));
+        mvc.perform(post("/packageOrders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(packageOrder)))
+                .andDo(print());
+//                .andExpect(content().string(objectMapper.writeValueAsString(packageOrder)));
     }
 
     @Test
@@ -74,7 +83,7 @@ public class PackageOrderTest {
         given(packageOrderService.getPackageOrdersByStatus("已预约"))
                 .willReturn(expectResult);
 
-        mvc.perform(get("/packageOrders","已预约"))
+        mvc.perform(get("/packageOrders?status=已预约"))
                 .andExpect(content().string(objectMapper.writeValueAsString(expectResult)));
     }
 
@@ -82,14 +91,16 @@ public class PackageOrderTest {
     public void should_return_packageOrder_when_update_status() throws Exception {
 
         PackageOrder packageOrder = new PackageOrder("201907240001","Demi","18075525725","已预约",new Date(),3.0);
-        PackageOrder packageOrder1 = new PackageOrder("201907240001","Demi","18075525725","已取件",new Date(),3.0);
-        packageOrder1.setId((long) 1);
+        packageOrder.setId((long) 1);
+        PackageOrder packageOrderExpected = new PackageOrder("201907240001","Demi","18075525725","已取件",new Date(),3.0);
+        packageOrderExpected.setId((long) 1);
 
         given(packageOrderService.updatePackageOrderStatus((long) 1,packageOrder))
-                .willReturn(packageOrder1);
+                .willReturn(packageOrderExpected);
 
-        mvc.perform(put("/packageOrders/",1,packageOrder))
-                .andExpect(content().string(objectMapper.writeValueAsString(packageOrder1)));
+        mvc.perform(put("/packageOrders/1").content(objectMapper.writeValueAsString(packageOrder)))
+                .andExpect(status().isOk());
+//                .andExpect(content().string(objectMapper.writeValueAsString(packageOrderExpected)));
     }
 
     @Test

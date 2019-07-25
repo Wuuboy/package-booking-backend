@@ -30,12 +30,12 @@ public class PackageOrderController {
     }
 
     @GetMapping(value = "/packageOrders",params = {"orderTime"})
-    public List<PackageOrder> getPackageOrdersByOrderTime(@PathVariable Date orderTime){
+    public List<PackageOrder> getPackageOrdersByOrderTime(@RequestParam Date orderTime){
         return  packageOrderService.getPackageOrdersByOrderTime(orderTime);
     }
 
     @PutMapping("/packageOrders/{id}")
-    public PackageOrder updatePackageOrderStatus(@RequestParam Long id, @RequestBody PackageOrder packageOrder) {
+    public PackageOrder updatePackageOrderStatus(@PathVariable Long id, @RequestBody PackageOrder packageOrder) {
         return  packageOrderService.updatePackageOrderStatus(id,packageOrder);
     }
 }
